@@ -26,10 +26,14 @@ executable hilarity-server-exe
   build-depends:       base
                      , hilarity-server
                      , async
+                     , containers
                      , stm
                      , text
                      , websockets
   default-language:    Haskell2010
+  other-modules:       Card
+                     , Deck
+                     , Game
 
 test-suite hilarity-server-test
   type:                exitcode-stdio-1.0

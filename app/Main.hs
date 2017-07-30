@@ -9,6 +9,9 @@ import Control.Concurrent.STM as STM
 import qualified Network.WebSockets as WS
 
 import Lib
+import Card
+import Deck
+import Game
 
 type Message = T.Text
 type MessageChannel = STM.TChan Message
