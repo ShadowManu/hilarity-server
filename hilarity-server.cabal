@@ -29,9 +29,11 @@ executable hilarity-server-exe
                      , containers
                      , stm
                      , text
+                     , transformers
                      , websockets
   default-language:    Haskell2010
-  other-modules:       Card
+  other-modules:       Actions
+                     , Card
                      , Deck
                      , Game
 

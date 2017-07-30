@@ -3,6 +3,7 @@
 module Deck
 ( Deck(Deck)
 , testDeck
+, emptyDeck
 , decks
 ) where
 
@@ -13,7 +14,10 @@ import Card
 data Deck = Deck { getBlacks :: M.Map CardId BlackCard, getWhites :: M.Map CardId WhiteCard } deriving Show
 
 testDeck :: Deck
-testDeck = decks !! 1
+testDeck = Deck M.empty M.empty
+
+emptyDeck :: Deck
+emptyDeck = Deck M.empty M.empty
 
 decks :: [Deck]
 decks =
