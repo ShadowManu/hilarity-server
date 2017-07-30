@@ -32,7 +32,8 @@ type VerifiedState a = S.StateT Game (E.Except Failure) a
 -- If succesful, returns with a given value.
 -- Otherwise, the reason is given instead.
 update :: Intent -> a -> VerifiedState a
-update intent val = S.get >>= lift . E.except . intent >>= S.put >> return val
+update intent val = S.get >>= fromIntent >>= S.put >> return val
+  where fromIntent = lift . E.except . intent
 
 type Outcome a = Either Failure (a, Game)
 
