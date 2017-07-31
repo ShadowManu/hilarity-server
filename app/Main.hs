@@ -8,10 +8,13 @@ import Control.Monad
 import Control.Concurrent.STM as STM
 import qualified Network.WebSockets as WS
 
+import qualified Control.Monad.Trans.Except as E
+import qualified Control.Monad.Trans.State.Lazy as S
+import Control.Monad.Trans.Class
+
 import Lib
-import Card
-import Deck
-import Game
+
+import Actions
 
 type Message = T.Text
 type MessageChannel = STM.TChan Message

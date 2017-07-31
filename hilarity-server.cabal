@@ -29,11 +29,15 @@ executable hilarity-server-exe
                      , containers
                      , stm
                      , text
+                     , transformers
                      , websockets
   default-language:    Haskell2010
-  other-modules:       Card
-                     , Deck
-                     , Game
+  other-modules:       Actions
+                     , Operations.VerifiedState
+                     , Types.Card
+                     , Types.Deck
+                     , Types.Failure
+                     , Types.Game
 
 test-suite hilarity-server-test
   type:                exitcode-stdio-1.0
