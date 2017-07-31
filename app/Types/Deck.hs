@@ -18,7 +18,7 @@ newDeck :: Deck
 newDeck = Deck M.empty M.empty
 
 makeDeck :: [(CardId, T.Text, Integer)] -> [(CardId, T.Text)] -> Deck
-makeDeck blacks whites = Deck blackMap whiteMap
+makeDeck blacks whites = Deck bMap wMap
   where
     bPair (id, con, holes) = (id, BlackCard id con holes)
     wPair (id, con) = (id, WhiteCard id con)
