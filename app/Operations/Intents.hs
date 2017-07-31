@@ -5,6 +5,12 @@ import Types.Deck
 import Types.Failure
 import qualified Types.Game as G
 
+assert :: Bool -> Failure -> Either Failure ()
+assert cond fail
+  | cond = Right ()
+  | otherwise = Left fail
+
 addUser :: G.UserId -> VS.Intent
-addUser id game = if id `G.inGame` game then Left Failure
-                                else Right $ G.addUser id game
+addUser id game = do
+  assert (not $ G.inGame id game) Failure
+  return $ G.addUser id game
