@@ -12,6 +12,7 @@ module Types.Game
 
 , newGame
 , addUser
+, inGame
 , newHand
   -- Round bindings
 , Round(Round)
@@ -41,6 +42,9 @@ newGame = Game { deck = newDeck, users = M.empty, rounds = [] }
 
 addUser :: UserId -> Game -> Game
 addUser id game = game { users = M.insert id newHand (users game) }
+
+inGame :: UserId -> Game -> Bool
+inGame id game = M.member id (users game)
 
 type Hand = S.Set WhiteCard
 

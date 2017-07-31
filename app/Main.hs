@@ -14,7 +14,7 @@ import Control.Monad.Trans.Class
 
 import Lib
 
-import Actions
+import Operations.Intents
 
 type Message = T.Text
 type MessageChannel = STM.TChan Message
