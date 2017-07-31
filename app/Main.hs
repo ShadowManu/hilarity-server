@@ -15,9 +15,6 @@ import Control.Monad.Trans.Class
 import Lib
 
 import Actions
-import Card
-import Deck
-import Game
 
 type Message = T.Text
 type MessageChannel = STM.TChan Message

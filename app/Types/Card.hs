@@ -1,4 +1,4 @@
-module Card
+module Types.Card
 ( CardId
 , BlackCard(BlackCard)
 , WhiteCard(WhiteCard)
