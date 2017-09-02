@@ -10,10 +10,10 @@ import qualified Network.WebSockets as WS
 
 import Lib
 
-import qualified Operations.Intents as I
-import qualified Operations.VerifiedState as VS
+import qualified Operations.Mods as M
 import qualified Types.Failure as F
 import qualified Types.Game as G
+import qualified Types.State as S
 
 type Message = T.Text
 type MessageChannel = TChan Message
@@ -21,8 +21,10 @@ type MessageChannel = TChan Message
 makeMessages :: IO MessageChannel
 makeMessages = atomically newTChan
 
-makeGame :: IO (TVar G.Game)
-makeGame = atomically $ newTVar G.newGame
+makeState :: IO (TVar S.State)
+makeState = do
+  state <- S.newStateIO
+  atomically $ newTVar state
 
 address = "127.0.0.1"
 port = 3000
@@ -31,19 +33,19 @@ main :: IO ()
 main = do
   putStrLn $ "Starting server on " ++ address ++ ":" ++ show port
   chan <- makeMessages
-  gamevar <- makeGame
+  statevar <- makeState
 
-  serv <- async $ WS.runServer address port (app chan gamevar)
+  serv <- async $ WS.runServer address port (app chan statevar)
   wait serv
 
-app :: MessageChannel -> TVar G.Game -> WS.ServerApp
-app chan gamevar pending = do
+app :: MessageChannel -> TVar S.State -> WS.ServerApp
+app chan statevar pending = do
   putStrLn "Accepting incoming connection"
   conn <- WS.acceptRequest pending
-  handle chan gamevar conn
+  handle chan statevar conn
 
-handle :: MessageChannel -> TVar G.Game -> WS.Connection -> IO ()
-handle channel gamevar conn = do
+handle :: MessageChannel -> TVar S.State -> WS.Connection -> IO ()
+handle channel statevar conn = do
   dupChannel <- atomically $ dupTChan channel
   concurrently_ (receive dupChannel) (send dupChannel)
 
@@ -53,19 +55,19 @@ handle channel gamevar conn = do
       done <- async . forever $ do
         -- Receive id
         message <- WS.receiveData conn :: IO T.Text
-
         atomically $ do
-          -- Read game
-          game <- readTVar gamevar 
+          -- Read state
+          state <- readTVar statevar
 
-          -- Get result
-          let result = VS.resolve (VS.update (I.addUser message) ("Agregado " `T.append` message)) game :: Either F.Failure (T.Text, G.Game)
+          -- Run mod
+          let eith = M.runMod (M.addUser message) state
 
-          case result of
-            Left f -> writeTChan chan $ "Error" `T.append` T.pack (show f)
-            Right (m, s) -> do
-              writeTVar gamevar s
-              writeTChan chan m
+          case eith of
+            Left fail -> writeTChan chan $ "Error: " `T.append` T.pack (show fail)
+            Right (response, state) -> do
+              writeTVar statevar state
+              writeTChan chan response
+
       wait done
 
     send chan = do
