@@ -27,17 +27,18 @@ executable hilarity-server-exe
                      , hilarity-server
                      , async
                      , containers
+                     , random
                      , stm
                      , text
                      , transformers
                      , websockets
   default-language:    Haskell2010
-  other-modules:       Operations.Intents
-                     , Operations.VerifiedState
+  other-modules:       Operations.Mods
                      , Types.Card
                      , Types.Deck
                      , Types.Failure
                      , Types.Game
+                     , Types.State
 
 test-suite hilarity-server-test
   type:                exitcode-stdio-1.0
