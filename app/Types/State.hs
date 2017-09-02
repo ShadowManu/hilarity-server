@@ -1,5 +1,7 @@
 module Types.State
-( State
+( State(State)
+, getGame
+, getGen
 , newState
 , newStateIO
 ) where
@@ -9,7 +11,7 @@ import System.Random
 
 import Types.Game
 
-data State = State Game StdGen
+data State = State { getGame :: Game, getGen :: StdGen } deriving Show
 
 newState :: StdGen -> State
 newState = State newGame
