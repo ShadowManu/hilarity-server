@@ -49,7 +49,7 @@ inGame id game = M.member id (users game)
 type Hand = S.Set WhiteCard
 
 newHand :: Hand
-newHand = S.empty
+newHand = S.empty 
 
 -- Round Bindings
 
