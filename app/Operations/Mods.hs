@@ -1,9 +1,12 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Operations.Mods
 ( Mod
 , runMod
 , addUser
 ) where
 
+import qualified Data.Text as T
 import Control.Monad.Trans.Class
 import qualified Control.Monad.Trans.Except as E
 import qualified Control.Monad.Trans.State.Lazy as S
@@ -37,7 +40,7 @@ modifyGame newGame (State game gen) = State newGame gen
 
 -- Mod Operations
 
-addUser :: G.UserId -> Mod State String
+addUser :: G.UserId -> Mod State T.Text
 addUser id = do
   game <- S.gets getGame
   lift $ assert (not $ G.inGame id game) Failure
