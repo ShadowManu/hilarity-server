@@ -1,18 +1,28 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Types.Deck
 ( Deck(Deck)
+, blackCards
+, whiteCards
+
 , newDeck
 , makeDeck
 , testDeck
 ) where
 
+import Data.DeriveTH
+import Data.Derive.Monoid
 import qualified Data.Map as M
 import qualified Data.Text as T
+import Control.Lens
 
 import Types.Card
 
-data Deck = Deck { getBlacks :: M.Map CardId BlackCard, getWhites :: M.Map CardId WhiteCard } deriving Show
+data Deck = Deck { _blackCards :: M.Map CardId BlackCard, _whiteCards :: M.Map CardId WhiteCard } deriving Show
+
+$(derive makeMonoid ''Deck)
+makeLenses ''Deck
 
 newDeck :: Deck
 newDeck = Deck M.empty M.empty

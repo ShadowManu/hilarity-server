@@ -1,17 +1,23 @@
+{-# LANGUAGE TemplateHaskell #-}
+
 module Types.State
 ( State(State)
-, getGame
-, getGen
+, game
+, gen
+
 , newState
 , newStateIO
 ) where
 
 import Control.Applicative
+import Control.Lens
 import System.Random
 
 import Types.Game
 
-data State = State { getGame :: Game, getGen :: StdGen } deriving Show
+data State = State { _game :: Game, _gen :: StdGen } deriving Show
+
+makeLenses ''State
 
 newState :: StdGen -> State
 newState = State newGame

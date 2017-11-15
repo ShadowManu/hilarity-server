@@ -1,22 +1,25 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Rank2Types #-}
 
 module Operations.Mods
 ( Mod
 , runMod
-, addUser
+-- , addUser
 ) where
 
 import qualified Data.Text as T
 import Control.Monad.Trans.Class
+import Control.Lens
 import qualified Control.Monad.Trans.Except as E
 import qualified Control.Monad.Trans.State.Lazy as S
 
 import Types.Failure
 import qualified Types.Game as G
 import Types.State
-import Operations.Utils
 
 -- Monad Definition
+
+-- type Operation = State -> Either Failure (a, s)
 
 -- Custom monad to represent a stateful computation that
 -- modifies a state 's' getting result 'a' that can have a Failure.
@@ -28,24 +31,20 @@ runMod mod state = E.runExcept $ S.runStateT mod state
 
 -- Utilities
 
-forGame :: Mod G.Game a -> Mod State a
-forGame gameMod = do
-  (State game gen) <- S.get
-  (result, newGame) <- lift . E.except $ runMod gameMod game
-  S.put $ State newGame gen
-  return result
+runModWithLens :: Lens' s t -> Mod t a -> Mod s a
+runModWithLens lens targetMod = do
+  -- Bind source and target states
+  source <- S.get
+  let target = source ^. lens
 
-modifyGame :: G.Game -> State -> State
-modifyGame newGame (State game gen) = State newGame gen
-
--- Mod Operations
-
-addUser :: G.UserId -> Mod State T.Text
-addUser id = do
-  game <- S.gets getGame
-  lift $ assert (not $ G.inGame id game) Failure
-  S.modify . modifyGame $ G.addUser id game
-  return "All ok!"
+  -- Run target mod
+  case runMod targetMod target of
+    -- If its a failure, propagate it
+    Left f -> lift . E.except $ Left f
+    -- If its successful, update target in source and return value
+    Right (a, t) -> do
+      S.put $ source & lens .~ target
+      return a
 
 ---- Operations
 -- Add User

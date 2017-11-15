@@ -11,6 +11,7 @@ import qualified Network.WebSockets as WS
 import Lib
 
 import qualified Operations.Mods as M
+import qualified Operations.Mods.User as M
 import qualified Types.Failure as F
 import qualified Types.Game as G
 import qualified Types.State as S
