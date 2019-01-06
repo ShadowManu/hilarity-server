@@ -3,40 +3,59 @@
 
 module Types.Deck
 ( Deck(Deck)
+, SubDeck
 , blackCards
 , whiteCards
 
-, newDeck
-, makeDeck
-, testDeck
+, empty
+, size
+, get
+, randomSelect
+, fromLists
+, example
 ) where
 
-import Data.DeriveTH
-import Data.Derive.Monoid
 import qualified Data.Map as M
 import qualified Data.Text as T
 import Control.Lens
 
 import Types.Card
 
-data Deck = Deck { _blackCards :: M.Map CardId BlackCard, _whiteCards :: M.Map CardId WhiteCard } deriving Show
+type SubDeck a = M.Map CardId a
 
-$(derive makeMonoid ''Deck)
+data Deck = Deck
+  { _blackCards :: SubDeck BlackCard
+  , _whiteCards :: SubDeck WhiteCard }
+  deriving Show
+
 makeLenses ''Deck
 
-newDeck :: Deck
-newDeck = Deck M.empty M.empty
+empty :: Deck
+empty = Deck M.empty M.empty
 
-makeDeck :: [(CardId, T.Text, Integer)] -> [(CardId, T.Text)] -> Deck
-makeDeck blacks whites = Deck bMap wMap
+size :: SubDeck a -> Int
+size = M.size
+
+get :: CardId -> SubDeck a -> a
+get card sub = (M.!) sub card
+
+randomSelect :: Int -> SubDeck a -> CardId
+randomSelect num sub = fst $ M.elemAt index sub
+  where index = num `mod` size sub
+
+orderedId :: Int -> SubDeck a -> CardId
+orderedId index = fst . M.elemAt index
+
+fromLists :: [(CardId, T.Text, Integer)] -> [(CardId, T.Text)] -> Deck
+fromLists blacks whites = Deck bMap wMap
   where
     bPair (id, con, holes) = (id, BlackCard id con holes)
     wPair (id, con) = (id, WhiteCard id con)
     bMap = M.fromList . map bPair $ blacks
     wMap = M.fromList . map wPair $ whites
 
-testDeck :: Deck
-testDeck = makeDeck
+example :: Deck
+example = fromLists
   [ ("1", "Primera", 1)
   , ("2", "Segunda", 1)
   , ("3", "Tercera", 2)
