@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e51897a0b240f5d2e77a33afa509652fee9a3ee156500831945f6d584c83c83d
+-- hash: 853923e45250e5af496183b5e869cf4f09c4d2a7750f7777232b76f5c254b558
 
 name:           hilarity-server
 version:        0.1.0.0
@@ -43,9 +43,12 @@ executable hilarity-server-exe
       Operations.Mods.User
       Operations.Utils
       Types.Card
+      Types.Common
       Types.Deck
       Types.Failure
       Types.Game
+      Types.Hand
+      Types.Round
       Types.State
       Paths_hilarity_server
   hs-source-dirs:
