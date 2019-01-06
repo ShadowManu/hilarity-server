@@ -21,29 +21,27 @@ import Types.State
 
 -- type Operation = State -> Either Failure (a, s)
 
--- Custom monad to represent a stateful computation that
--- modifies a state 's' getting result 'a' that can have a Failure.
-type Mod s a = S.StateT s (E.Except Failure) a 
+-- Our error monad (base)
+type Err = E.ExceptT Failure Identity
 
--- Monad run function. Runs the modification in the given state
+-- Our state monad
+type St s m a = S.StateT s m a 
+
+-- Our full monad. A stateful computation that can fail.
+type Mod s a = St s Err a
+
+-- Monad run function. Runs the failure-aware computatation with the given state
 runMod :: Mod s a -> s -> Either Failure (a, s)
 runMod mod state = E.runExcept $ S.runStateT mod state
 
--- Utilities
-
 runModWithLens :: Lens' s t -> Mod t a -> Mod s a
 runModWithLens lens targetMod = do
-  -- Bind source and target states
-  source <- S.get
-  let target = source ^. lens
-
-  -- Run target mod
-  case runMod targetMod target of
-    -- If its a failure, propagate it
-    Left f -> lift . E.except $ Left f
-    -- If its successful, update target in source and return value
-    Right (a, t) -> do
-      S.put $ source & lens .~ target
+  target <- use lens
+  either withErr withVal $ runMod targetMod target
+  where
+    withErr err = lift . E.throwE $ err
+    withVal (a, t) = do
+      lens .= t
       return a
 
 ---- Operations
