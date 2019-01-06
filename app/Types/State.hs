@@ -7,11 +7,12 @@ module Types.State
 , gen
 
 , new
+, newIO
 ) where
 
 import Control.Applicative
 import Control.Lens
-import System.Random
+import System.Random (StdGen, newStdGen)
 
 import qualified Types.Game as Game
 
@@ -26,3 +27,6 @@ makeLenses ''State
 
 new :: StdGen -> State
 new = State Game.empty
+
+newIO :: IO State
+newIO = new <$> newStdGen

@@ -2,20 +2,23 @@
 
 module Operations.Mods.User
 ( addUser
+, rand
+, randWhiteCard
+, randBlackCard
+, dealCard
+, fillHand
 ) where
 
 import Control.Lens
-import Control.Monad (replicateM_)
--- import qualified Control.Monad.Trans.State.Lazy as S hiding (State)
-import qualified Data.Map as Map
-import qualified Data.Text as T
+import Control.Monad (replicateM)
+import Data.Text (Text)
 import System.Random
 
 import Operations.Mods
 import Operations.Utils
 
 import qualified Types.Card as Ca
-import qualified Types.Common as Co
+import Types.Common
 import qualified Types.Deck as D
 import qualified Types.Game as G
 import qualified Types.State as S
@@ -25,7 +28,7 @@ import Types.Failure
 initialCards = 5
 
 -- Add user to game
-addUser :: Co.UserId -> Mod State T.Text
+addUser :: UserId -> Mod State Text
 addUser id = do
   game <- use S.game
   assert (not $ G.hasUser id game) Failure
@@ -40,20 +43,27 @@ rand = do
   S.gen .= newGen
   return value
 
--- Obtain random card
-randWhiteCard :: Mod S.State Ca.CardId
+-- Obtain random white card
+randWhiteCard :: Mod State Ca.CardId
 randWhiteCard = do
   number <- rand
   whiteCards <- use $ S.game . G.deck . D.whiteCards
   return $ D.randomSelect number whiteCards
 
-randBlackCard :: Mod S.State Ca.CardId
+-- Obtain random black cards
+randBlackCard :: Mod State Ca.CardId
 randBlackCard = do
   number <- rand
   blackCards <- use $ S.game . G.deck . D.blackCards
   return $ D.randomSelect number blackCards
 
-fillHand :: Co.UserId -> Mod S.State ()
-fillHand user = replicateM_ initialCards $ do
+-- Deal a card to a player, indicating the given card
+dealCard :: UserId -> Mod State Ca.CardId
+dealCard user = do
   card <- randWhiteCard
-  modifying S.game $ G.dealCard card user
+  S.game %= G.dealCard card user
+  return card
+
+-- Fills a player hand with initial cards
+fillHand :: UserId -> Mod State [Ca.CardId]
+fillHand user = replicateM initialCards $ dealCard user

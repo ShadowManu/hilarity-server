@@ -24,7 +24,7 @@ makeMessages = atomically newTChan
 
 makeState :: IO (TVar S.State)
 makeState = do
-  state <- S.newStateIO
+  state <- S.newIO
   atomically $ newTVar state
 
 address = "127.0.0.1"
