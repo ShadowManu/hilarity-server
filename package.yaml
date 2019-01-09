@@ -36,6 +36,7 @@ executables:
     dependencies:
     - hilarity-server
     - async
+    - concurrent-extra
     - containers
     - lens
     - random

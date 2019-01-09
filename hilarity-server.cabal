@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 853923e45250e5af496183b5e869cf4f09c4d2a7750f7777232b76f5c254b558
+-- hash: 863fa424df507ad21c914d4b4796d24181bae8b21e74d6fee5d984b5993cb28e
 
 name:           hilarity-server
 version:        0.1.0.0
@@ -42,6 +42,7 @@ executable hilarity-server-exe
       Operations.Mods
       Operations.Mods.User
       Operations.Utils
+      Server
       Types.Card
       Types.Common
       Types.Deck
@@ -57,6 +58,7 @@ executable hilarity-server-exe
   build-depends:
       async
     , base >=4.7 && <5
+    , concurrent-extra
     , containers
     , hilarity-server
     , lens

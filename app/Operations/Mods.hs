@@ -4,14 +4,16 @@
 module Operations.Mods
 ( Mod
 , runMod
+, applyMod
 -- , addUser
 ) where
 
-import qualified Data.Text as T
-import Control.Monad.Trans.Class
+import Control.Concurrent.STM
 import Control.Lens
+import Control.Monad.Trans.Class
 import qualified Control.Monad.Trans.Except as E
 import qualified Control.Monad.Trans.State.Lazy as S
+import qualified Data.Text as T
 
 import Types.Failure
 import qualified Types.Game as G
@@ -34,20 +36,18 @@ type Mod s a = St s Err a
 runMod :: Mod s a -> s -> Either Failure (a, s)
 runMod mod state = E.runExcept $ S.runStateT mod state
 
-runModWithLens :: Lens' s t -> Mod t a -> Mod s a
-runModWithLens lens targetMod = do
+liftMod :: Lens' s t -> Mod t a -> Mod s a
+liftMod lens targetMod = do
   target <- use lens
-  either withErr withVal $ runMod targetMod target
-  where
-    withErr err = lift . E.throwE $ err
-    withVal (a, t) = do
+  case runMod targetMod target of
+    Left err -> lift . E.throwE $ err
+    Right (a, t) -> do
       lens .= t
       return a
 
----- Operations
--- Add User
--- Start Round (distribute cards,  choose czar)
--- Play Card
--- End Round
--- Choose winner
--- Remove user
+applyMod :: Mod s a -> TVar s -> STM (Either Failure a)
+applyMod mod tState = do
+  state <- readTVar tState
+  case runMod mod state of
+    Left err -> return . Left $ err
+    Right (a, newState) -> writeTVar tState newState >> return (Right a)
