@@ -11,7 +11,7 @@ import qualified Network.WebSockets as WS
 import qualified System.Random
 
 import qualified Types.Common as C
-import qualified Types.State as T
+import qualified Types.State as S
 import qualified Operations.Mods as Mod
 import qualified Operations.Mods.User as Mod
 
@@ -23,19 +23,19 @@ type UserList = M.Map C.UserId WS.Connection
 
 runServer :: String -> Int -> IO ()
 runServer address port = do
-  tState <- T.newIO >>= atomically . newTVar
+  tState <- S.newIO >>= atomically . newTVar
   tListeners <- atomically $ newTVar M.empty
   broadcast <- Bc.new
   WS.runServer address port (application tState tListeners broadcast)
 
-application :: TVar T.State -> TVar UserList -> Bc.Broadcast T.Text -> WS.ServerApp
+application :: TVar S.State -> TVar UserList -> Bc.Broadcast T.Text -> WS.ServerApp
 application tState tListeners broadcast pendingConnection = do
   putStrLn "Accepting incoming connection"
 
   connection <- WS.acceptRequest pendingConnection
   handleConnection tState tListeners broadcast connection
 
-handleConnection :: TVar T.State -> TVar UserList -> Bc.Broadcast T.Text -> WS.Connection -> IO ()
+handleConnection :: TVar S.State -> TVar UserList -> Bc.Broadcast T.Text -> WS.Connection -> IO ()
 handleConnection tState tListeners broadcast connection = do
   registerUser
   concurrently_ receive send
