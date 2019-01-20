@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 863fa424df507ad21c914d4b4796d24181bae8b21e74d6fee5d984b5993cb28e
+-- hash: 665b5303e2e6099e9cedd86873c0655306fa09d4ec7120b5bc1a78a5ce1a9ec8
 
 name:           hilarity-server
 version:        0.1.0.0
@@ -39,6 +39,7 @@ library
 executable hilarity-server-exe
   main-is: Main.hs
   other-modules:
+      Messaging
       Operations.Mods
       Operations.Mods.User
       Operations.Utils

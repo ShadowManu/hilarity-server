@@ -51,7 +51,7 @@ addRound :: Round -> Game -> Game
 addRound round = rounds %~ (round :)
 
 addUser :: UserId -> Game -> Game
-addUser user = users . ix user .~ Hand.empty
+addUser user = users . at user ?~ Hand.empty
 
 userHand :: UserId -> Game -> Maybe Hand.Hand
 userHand user = preview $ users . ix user
