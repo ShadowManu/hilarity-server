@@ -66,4 +66,8 @@ dealCard user = do
 
 -- Fills a player hand with initial cards
 fillHand :: UserId -> Mod State [Ca.CardId]
-fillHand user = replicateM initialCards $ dealCard user
+fillHand user = do
+  -- get current cards
+  current <- use $ S.game . G.users .
+  -- deal cards missing
+  replicateM initialCards $ dealCard user

@@ -1,7 +1,8 @@
 module Types.Hand
 ( Hand
 , empty
-, addCard
+, add
+, size
 ) where
 
 import qualified Data.Set as S
@@ -13,5 +14,8 @@ type Hand = S.Set CardId
 empty :: Hand
 empty = S.empty
 
-addCard :: CardId -> Hand -> Hand
-addCard = S.insert
+add :: CardId -> Hand -> Hand
+add = S.insert
+
+size :: Hand -> Int
+size = S.size

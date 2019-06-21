@@ -40,7 +40,7 @@ liftMod :: Lens' s t -> Mod t a -> Mod s a
 liftMod lens targetMod = do
   target <- use lens
   case runMod targetMod target of
-    Left err -> lift . E.throwE $ err
+    Left err -> lift $ E.throwE err
     Right (a, t) -> do
       lens .= t
       return a
@@ -49,5 +49,8 @@ applyMod :: Mod s a -> TVar s -> STM (Either Failure a)
 applyMod mod tState = do
   state <- readTVar tState
   case runMod mod state of
-    Left err -> return . Left $ err
-    Right (a, newState) -> writeTVar tState newState >> return (Right a)
+    Left err ->
+      return $ Left err
+    Right (a, newState) -> do
+      writeTVar tState newState
+      return $ Right a

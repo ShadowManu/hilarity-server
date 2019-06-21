@@ -15,7 +15,6 @@ module Types.Game
 , hasUser
 ) where
 
-import qualified Data.Map as M
 import Data.Maybe
 import qualified Data.Monoid as Mo
 import qualified Data.Set as S
@@ -27,8 +26,7 @@ import Types.Common
 import qualified Types.Deck as Deck
 import qualified Types.Hand as Hand
 import Types.Round
-
-type Users = M.Map UserId Hand.Hand
+import Types.Users
 
 data Game = Game
   { _deck :: Deck.Deck
@@ -45,7 +43,7 @@ empty = Game
   , _rounds = [] }
 
 dealCard :: CardId -> UserId -> Game -> Game
-dealCard card user = users . ix user %~ Hand.addCard card
+dealCard card user = users . ix user %~ Hand.add card
 
 addRound :: Round -> Game -> Game
 addRound round = rounds %~ (round :)
