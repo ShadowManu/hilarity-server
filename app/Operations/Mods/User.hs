@@ -26,6 +26,6 @@ import Types.Failure
 addUser :: UserId -> Mod State Text
 addUser name = do
   exists <- use $ S.game . G.users . to (U.has name)
-  assert exists Failure
+  assert (not exists) Failure
   S.game . G.users %= U.add name 
   return name
