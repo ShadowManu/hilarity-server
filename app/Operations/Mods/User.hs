@@ -21,7 +21,9 @@ import qualified Types.Card as Ca
 import Types.Common
 import qualified Types.Deck as D
 import qualified Types.Game as G
+import qualified Types.Hand as H
 import qualified Types.State as S
+import qualified Types.Users as U
 import Types.State (State)
 import Types.Failure
 
@@ -29,10 +31,10 @@ initialCards = 5
 
 -- Add user to game
 addUser :: UserId -> Mod State Text
-addUser id = do
-  game <- use S.game
-  assert (not $ G.hasUser id game) Failure
-  S.game %= G.addUser id 
+addUser name = do
+  exists <- use $ S.game . G.users . to (U.has name)
+  assert exists Failure
+  S.game . G.users %= U.add name 
   return "All ok!"
 
 -- Obtain random int
@@ -59,15 +61,14 @@ randBlackCard = do
 
 -- Deal a card to a player, indicating the given card
 dealCard :: UserId -> Mod State Ca.CardId
-dealCard user = do
+dealCard id = do
   card <- randWhiteCard
-  S.game %= G.dealCard card user
+  S.game . G.users . U.byId id %= H.add card
   return card
 
--- Fills a player hand with initial cards
+-- Fills a player hand with missing cards
 fillHand :: UserId -> Mod State [Ca.CardId]
-fillHand user = do
-  -- get current cards
-  current <- use $ S.game . G.users .
-  -- deal cards missing
-  replicateM initialCards $ dealCard user
+fillHand id = do
+  current <- use $ S.game . G.users . U.byId id
+  let missing = initialCards - (H.size current)
+  replicateM missing $ dealCard id

@@ -8,11 +8,6 @@ module Types.Game
 , rounds
 
 , empty
-, dealCard
-, addRound
-, addUser
-, userHand
-, hasUser
 ) where
 
 import Data.Maybe
@@ -26,11 +21,11 @@ import Types.Common
 import qualified Types.Deck as Deck
 import qualified Types.Hand as Hand
 import Types.Round
-import Types.Users
+import qualified Types.Users as Users
 
 data Game = Game
   { _deck :: Deck.Deck
-  , _users :: Users
+  , _users :: Users.Users
   , _rounds :: [Round] }
   deriving Show
 
@@ -39,20 +34,5 @@ makeLenses ''Game
 empty :: Game
 empty = Game
   { _deck = Deck.empty
-  , _users = M.empty
+  , _users = Users.empty
   , _rounds = [] }
-
-dealCard :: CardId -> UserId -> Game -> Game
-dealCard card user = users . ix user %~ Hand.add card
-
-addRound :: Round -> Game -> Game
-addRound round = rounds %~ (round :)
-
-addUser :: UserId -> Game -> Game
-addUser user = users . at user ?~ Hand.empty
-
-userHand :: UserId -> Game -> Maybe Hand.Hand
-userHand user = preview $ users . ix user
-
-hasUser :: UserId -> Game -> Bool
-hasUser user = isJust . userHand user

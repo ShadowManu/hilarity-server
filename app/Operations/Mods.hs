@@ -5,7 +5,7 @@ module Operations.Mods
 ( Mod
 , runMod
 , applyMod
--- , addUser
+, throw
 ) where
 
 import Control.Concurrent.STM
@@ -54,3 +54,6 @@ applyMod mod tState = do
     Right (a, newState) -> do
       writeTVar tState newState
       return $ Right a
+
+throw :: Failure -> Mod s a
+throw = lift . E.throwE

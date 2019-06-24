@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 665b5303e2e6099e9cedd86873c0655306fa09d4ec7120b5bc1a78a5ce1a9ec8
+-- hash: 0cfa332917c08df91e6c06c3947a2fb3de79c2f92c27538431fdc35aef8c83db
 
 name:           hilarity-server
 version:        0.1.0.0
@@ -52,6 +52,7 @@ executable hilarity-server-exe
       Types.Hand
       Types.Round
       Types.State
+      Types.Users
       Paths_hilarity_server
   hs-source-dirs:
       app
