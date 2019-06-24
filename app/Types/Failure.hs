@@ -1,5 +1,10 @@
 module Types.Failure 
-( Failure(Failure)
+( Failure(..)
 ) where
 
-data Failure = Failure deriving Show
+import Types.Common
+
+data Failure
+  = Failure
+  | UserAlreadySignedIn UserId
+  deriving Show
