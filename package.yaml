@@ -28,8 +28,7 @@ executables:
       - -with-rtsopts=-N
     dependencies:
       - hilarity-server
-      - async
-      - concurrent-extra
+      - aeson
       - containers
       - lens
       - random

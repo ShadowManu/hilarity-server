@@ -2,7 +2,6 @@ module Server
 ( runServer
 ) where
 
-import Control.Concurrent.Async (concurrently_)
 import Control.Concurrent.STM
 import Control.Monad (forever, unless)
 import qualified Data.Text as T
