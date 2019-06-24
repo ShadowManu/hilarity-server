@@ -33,9 +33,12 @@ data Cast
   | Broad Response
   | Raw WS.Connection Response
 
+type Connections = M.Map C.UserId WS.Connection
+
 data Messenger = Messenger
   { _cast :: TMVar Cast
-  , _recipients :: TVar (M.Map C.UserId WS.Connection) }
+  , _recipients :: TVar Connections }
+
 
 makeLenses ''Messenger
 

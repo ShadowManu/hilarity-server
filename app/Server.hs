@@ -4,62 +4,56 @@ module Server
 
 import Control.Concurrent.Async (concurrently_)
 import Control.Concurrent.STM
-import qualified Control.Concurrent.Broadcast as Bc
 import Control.Monad (forever, unless)
-import Control.Lens
-import Data.Either
-import qualified Data.Map as M
 import qualified Data.Text as T
 import qualified Network.WebSockets as WS
 import qualified System.Random
 
 import qualified Types.Common as C
-import qualified Types.State as S
-import qualified Messaging as Me
-import qualified Operations.Mods as Mod
-import qualified Operations.Mods.User as Mod
+import Types.State (State, newIO)
+import qualified Messaging as Ms
+import Operations.Mods (applyMod)
+import Operations.Mods.User (addUser)
 
-type UserList = M.Map C.UserId WS.Connection
+type TState = TVar State
 
 runServer :: String -> Int -> IO ()
 runServer address port = do
-  tState <- S.newIO >>= atomically . newTVar
-  messenger <- atomically Me.new
+  tState <- newIO >>= atomically . newTVar
+  messenger <- atomically Ms.new
 
   -- TODO close broadcast thread
-  Me.startBroadcast messenger
+  Ms.startBroadcast messenger
   WS.runServer address port (application tState messenger)
 
-application :: TVar S.State -> Me.Messenger -> WS.ServerApp
-application tState messenger pendingConnection = do
-  connection <- WS.acceptRequest pendingConnection
-  handleConnection tState messenger connection
+application :: TState -> Ms.Messenger -> WS.ServerApp
+application tState messenger pending = do
+  connection <- WS.acceptRequest pending
+  handle tState messenger connection
 
-handleConnection :: TVar S.State -> Me.Messenger -> WS.Connection -> IO ()
-handleConnection tState messenger connection = do
-  registerUser
-  receive
-
+handle :: TState -> Ms.Messenger -> WS.Connection -> IO ()
+handle tState messenger connection = registerUser >> receive
   where
     registerUser = do
       username <- WS.receiveData connection :: IO T.Text
 
-      success <- atomically $ do
-        result <- Mod.applyMod (Mod.addUser username) tState
-
+      registered <- atomically $ do
+        result <- applyMod (addUser username) tState
         case result of
           Left failure -> do
             let message = T.pack . show $ failure
-            Me.send (Me.Raw connection message) messenger
+            Ms.send (Ms.Raw connection message) messenger
             return False
 
           Right message -> do
-            Me.add username connection messenger
-            Me.send (Me.Uni (username, message)) messenger
+            Ms.add username connection messenger
+            Ms.send (Ms.Uni (username, message)) messenger
             return True
 
-      unless success registerUser
+      unless registered registerUser
 
     receive = forever $ do
       message <- WS.receiveData connection
-      atomically $ Me.send (Me.Broad message) messenger
+      -- Temporarily send a broad message with the same message
+      -- Next steps: use with applyMod
+      atomically $ Ms.send (Ms.Broad message) messenger
