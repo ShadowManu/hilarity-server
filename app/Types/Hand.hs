@@ -1,6 +1,7 @@
 module Types.Hand
 ( Hand
 , empty
+, has
 , add
 , size
 ) where
@@ -13,6 +14,9 @@ type Hand = S.Set CardId
 
 empty :: Hand
 empty = S.empty
+
+has :: CardId -> Hand -> Bool
+has = S.member
 
 add :: CardId -> Hand -> Hand
 add = S.insert

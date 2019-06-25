@@ -46,7 +46,7 @@ randomSelect num sub = fst $ M.elemAt index sub
 orderedId :: Int -> SubDeck a -> CardId
 orderedId index = fst . M.elemAt index
 
-fromLists :: [(CardId, T.Text, Integer)] -> [(CardId, T.Text)] -> Deck
+fromLists :: [(CardId, T.Text, Int)] -> [(CardId, T.Text)] -> Deck
 fromLists blacks whites = Deck bMap wMap
   where
     bPair (id, con, holes) = (id, BlackCard id con holes)

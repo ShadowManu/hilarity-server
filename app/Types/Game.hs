@@ -20,13 +20,13 @@ import Types.Card
 import Types.Common
 import qualified Types.Deck as Deck
 import qualified Types.Hand as Hand
-import Types.Round
+import qualified Types.Round as Round
 import qualified Types.Users as Users
 
 data Game = Game
   { _deck :: Deck.Deck
   , _users :: Users.Users
-  , _rounds :: [Round] }
+  , _rounds :: [Round.Round] }
   deriving Show
 
 makeLenses ''Game
