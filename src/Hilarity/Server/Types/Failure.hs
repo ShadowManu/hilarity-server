@@ -1,9 +1,9 @@
-module Types.Failure 
+module Hilarity.Server.Types.Failure 
 ( Failure(..)
 ) where
 
-import Types.Common
-import Types.Card
+import Hilarity.Server.Types.Common
+import Hilarity.Server.Types.Card
 
 data Failure
   = Failure

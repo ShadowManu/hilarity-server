@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 621d2f2e575bdbd8b078ea2f1d445a4fbe2d72269c74f0f545437cfd8cf17a2c
+-- hash: c9dcc3662b278536ec1e6a7f41abb7f7acbd83cae28547ab1e9549fba23ac879
 
 name:           hilarity-server
 version:        0.1.0.0
@@ -27,50 +27,49 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Hilarity.Server.Messaging
+      Hilarity.Server.Operations.Mods
+      Hilarity.Server.Operations.Mods.Card
+      Hilarity.Server.Operations.Mods.Common
+      Hilarity.Server.Operations.Mods.User
+      Hilarity.Server.Operations.Utils
+      Hilarity.Server.Server
+      Hilarity.Server.Types.Actions
+      Hilarity.Server.Types.Card
+      Hilarity.Server.Types.Common
+      Hilarity.Server.Types.Deck
+      Hilarity.Server.Types.Failure
+      Hilarity.Server.Types.Game
+      Hilarity.Server.Types.Hand
+      Hilarity.Server.Types.Round
+      Hilarity.Server.Types.State
+      Hilarity.Server.Types.Users
   other-modules:
       Paths_hilarity_server
   hs-source-dirs:
       src
   build-depends:
-      base >=4.14 && <5
-  default-language: Haskell2010
-
-executable hilarity-server-exe
-  main-is: Main.hs
-  other-modules:
-      Messaging
-      Operations.Mods
-      Operations.Mods.Card
-      Operations.Mods.Common
-      Operations.Mods.User
-      Operations.Utils
-      Server
-      Types.Actions
-      Types.Card
-      Types.Common
-      Types.Deck
-      Types.Failure
-      Types.Game
-      Types.Hand
-      Types.Round
-      Types.State
-      Types.Users
-      Paths_hilarity_server
-  hs-source-dirs:
-      app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
       aeson
     , base >=4.14 && <5
     , containers
-    , hilarity-server
     , lens
     , random
     , stm
     , text
     , transformers
     , websockets
+  default-language: Haskell2010
+
+executable hilarity-server-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_hilarity_server
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.14 && <5
+    , hilarity-server
   default-language: Haskell2010
 
 test-suite hilarity-server-test

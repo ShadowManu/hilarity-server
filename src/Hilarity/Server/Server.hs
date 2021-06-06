@@ -1,4 +1,4 @@
-module Server
+module Hilarity.Server.Server
 ( runServer
 ) where
 
@@ -8,11 +8,11 @@ import qualified Data.Text as T
 import qualified Network.WebSockets as WS
 import qualified System.Random
 
-import qualified Types.Common as C
-import Types.State (State, newIO)
-import qualified Messaging as Ms
-import Operations.Mods (applyMod)
-import Operations.Mods.User (addUser)
+import qualified Hilarity.Server.Types.Common as C
+import Hilarity.Server.Types.State (State, newIO)
+import qualified Hilarity.Server.Messaging as Ms
+import Hilarity.Server.Operations.Mods (applyMod)
+import Hilarity.Server.Operations.Mods.User (addUser)
 
 type TState = TVar State
 

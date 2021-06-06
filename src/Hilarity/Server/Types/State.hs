@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module Types.State
+module Hilarity.Server.Types.State
 ( Some(Some)
 , State(State)
 , game
@@ -14,7 +14,7 @@ import Control.Applicative
 import Control.Lens
 import System.Random (StdGen, newStdGen)
 
-import qualified Types.Game as Game
+import qualified Hilarity.Server.Types.Game as Game
 
 data Some = Some
 

@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Types.Actions
+module Hilarity.Server.Types.Actions
 (
 ) where
 
 import Data.Aeson
 
-import Types.Common
+import Hilarity.Server.Types.Common
 
 data Actions
   = SignIn UserId

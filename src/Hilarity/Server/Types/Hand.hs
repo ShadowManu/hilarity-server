@@ -1,4 +1,4 @@
-module Types.Hand
+module Hilarity.Server.Types.Hand
 ( Hand
 , empty
 , has
@@ -8,7 +8,7 @@ module Types.Hand
 
 import qualified Data.Set as S
 
-import Types.Card
+import Hilarity.Server.Types.Card
 
 type Hand = S.Set CardId
 

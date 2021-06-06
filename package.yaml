@@ -17,6 +17,15 @@ dependencies:
 
 library:
   source-dirs: src
+  dependencies:
+    - aeson
+    - containers
+    - lens
+    - random
+    - stm
+    - text
+    - transformers
+    - websockets
 
 executables:
   hilarity-server-exe:
@@ -28,14 +37,6 @@ executables:
       - -with-rtsopts=-N
     dependencies:
       - hilarity-server
-      - aeson
-      - containers
-      - lens
-      - random
-      - stm
-      - text
-      - transformers
-      - websockets
 
 tests:
   hilarity-server-test:

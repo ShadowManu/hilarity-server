@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Rank2Types #-}
 
-module Operations.Mods
+module Hilarity.Server.Operations.Mods
 ( Mod
 , runMod
 , applyMod
@@ -15,9 +15,9 @@ import qualified Control.Monad.Trans.Except as E
 import qualified Control.Monad.Trans.State.Lazy as S
 import qualified Data.Text as T
 
-import Types.Failure
-import qualified Types.Game as G
-import Types.State
+import Hilarity.Server.Types.Failure
+import qualified Hilarity.Server.Types.Game as G
+import Hilarity.Server.Types.State
 
 -- Monad Definition
 

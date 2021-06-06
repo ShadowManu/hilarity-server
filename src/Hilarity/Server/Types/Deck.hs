@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Types.Deck
+module Hilarity.Server.Types.Deck
 ( Deck(Deck)
 , SubDeck
 , blackCards
@@ -19,7 +19,7 @@ import qualified Data.Map as M
 import qualified Data.Text as T
 import Control.Lens
 
-import Types.Card
+import Hilarity.Server.Types.Card
 
 type SubDeck a = M.Map CardId a
 

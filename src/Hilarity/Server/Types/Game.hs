@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Types.Game
+module Hilarity.Server.Types.Game
 ( Game
 , deck
 , users
@@ -16,12 +16,12 @@ import qualified Data.Set as S
 import qualified Data.Text as T
 import Control.Lens
 
-import Types.Card
-import Types.Common
-import qualified Types.Deck as Deck
-import qualified Types.Hand as Hand
-import qualified Types.Round as Round
-import qualified Types.Users as Users
+import Hilarity.Server.Types.Card
+import Hilarity.Server.Types.Common
+import qualified Hilarity.Server.Types.Deck as Deck
+import qualified Hilarity.Server.Types.Hand as Hand
+import qualified Hilarity.Server.Types.Round as Round
+import qualified Hilarity.Server.Types.Users as Users
 
 data Game = Game
   { _deck :: Deck.Deck

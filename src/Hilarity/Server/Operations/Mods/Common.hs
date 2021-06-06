@@ -4,16 +4,16 @@
 -- If round done, display plays
 -- Choose winner, start round
 
-module Operations.Mods.Common
+module Hilarity.Server.Operations.Mods.Common
 ( rand
 ) where
 
 import Control.Lens
 import System.Random
 
-import Operations.Mods
-import Types.State (State)
-import qualified Types.State as S
+import Hilarity.Server.Operations.Mods
+import Hilarity.Server.Types.State (State)
+import qualified Hilarity.Server.Types.State as S
 
 -- Obtain random int
 rand :: Mod State Int

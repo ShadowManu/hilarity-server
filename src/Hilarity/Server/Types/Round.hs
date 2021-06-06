@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Types.Round
+module Hilarity.Server.Types.Round
 ( Round(Round)
 , black
 , plays
@@ -17,8 +17,8 @@ import Data.Semigroup
 import qualified Data.Map as M
 import Control.Lens
 
-import Types.Card
-import Types.Common
+import Hilarity.Server.Types.Card
+import Hilarity.Server.Types.Common
 
 data Round = Round
   { _black :: Maybe CardId

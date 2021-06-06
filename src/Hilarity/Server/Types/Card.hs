@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module Types.Card
+module Hilarity.Server.Types.Card
 ( CardId
 
 , BlackCard(BlackCard)
