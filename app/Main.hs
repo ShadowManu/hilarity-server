@@ -2,7 +2,7 @@
 
 module Main where
 
-import Server (runServer)
+import Hilarity.Server.Server (runServer)
 
 address = "127.0.0.1"
 port = 3000

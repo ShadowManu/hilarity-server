@@ -1,4 +1,4 @@
-module Types.Common
+module Hilarity.Server.Types.Common
 ( UserId
 ) where
 

@@ -1,7 +1,7 @@
 {-# LANGUAGE Rank2Types #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Types.Users
+module Hilarity.Server.Types.Users
 ( Users
 , empty
 , add
@@ -12,8 +12,8 @@ module Types.Users
 import qualified Data.Map as M
 import Control.Lens hiding (has)
 
-import Types.Common
-import qualified Types.Hand as Hand
+import Hilarity.Server.Types.Common
+import qualified Hilarity.Server.Types.Hand as Hand
 
 type Users = M.Map UserId Hand.Hand
 

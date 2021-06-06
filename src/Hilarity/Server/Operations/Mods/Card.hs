@@ -1,5 +1,5 @@
 
-module Operations.Mods.Card
+module Hilarity.Server.Operations.Mods.Card
 ( fillHand
 ) where
 
@@ -9,20 +9,20 @@ import Control.Lens
 import Control.Monad (replicateM)
 import System.Random
 
-import Operations.Mods
-import Operations.Mods.Common (rand)
-import Operations.Utils
+import Hilarity.Server.Operations.Mods
+import Hilarity.Server.Operations.Mods.Common (rand)
+import Hilarity.Server.Operations.Utils
 
-import Types.State (State)
-import qualified Types.Card as C
-import Types.Common
-import qualified Types.Deck as D
-import Types.Failure
-import qualified Types.Game as G
-import qualified Types.Hand as H
-import qualified Types.Round as R
-import qualified Types.State as S
-import qualified Types.Users as U
+import Hilarity.Server.Types.State (State)
+import qualified Hilarity.Server.Types.Card as C
+import Hilarity.Server.Types.Common
+import qualified Hilarity.Server.Types.Deck as D
+import Hilarity.Server.Types.Failure
+import qualified Hilarity.Server.Types.Game as G
+import qualified Hilarity.Server.Types.Hand as H
+import qualified Hilarity.Server.Types.Round as R
+import qualified Hilarity.Server.Types.State as S
+import qualified Hilarity.Server.Types.Users as U
 
 initialCards = 5
 

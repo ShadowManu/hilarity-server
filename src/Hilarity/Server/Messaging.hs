@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Messaging
+module Hilarity.Server.Messaging
 ( Cast (Uni, Multi, Broad, Raw)
 , Messenger
 , new
@@ -21,7 +21,7 @@ import Control.Concurrent.STM
 import qualified Data.Text as T
 import Control.Lens
 
-import qualified Types.Common as C
+import qualified Hilarity.Server.Types.Common as C
 
 type Recipient = C.UserId
 type Response = T.Text
