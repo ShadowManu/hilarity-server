@@ -1,5 +1,6 @@
 module Operations.Utils
 ( assert
+, extract
 ) where
 
 import Control.Monad.Trans.Class
@@ -16,3 +17,7 @@ assert :: Bool -> Failure -> Mod s ()
 assert cond fail
   | cond = return ()
   | otherwise = lift $ E.throwE fail
+
+extract :: Failure -> Maybe a -> Mod s a
+extract _ (Just a) = return a
+extract fail Nothing = throw fail

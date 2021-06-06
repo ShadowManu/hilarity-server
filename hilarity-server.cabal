@@ -1,58 +1,87 @@
-name:                hilarity-server
-version:             0.1.0.0
--- synopsis:
--- description:
-homepage:            https://github.com/githubuser/hilarity-server#readme
-license:             BSD3
-license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2017 Author name here
-category:            Web
-build-type:          Simple
-extra-source-files:  README.md
-cabal-version:       >=1.10
+cabal-version: 1.12
 
-library
-  hs-source-dirs:      src
-  exposed-modules:     Lib
-  build-depends:       base >= 4.7 && < 5
-  default-language:    Haskell2010
+-- This file has been generated from package.yaml by hpack version 0.31.1.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: f7cded51440305cc48c5a334a3be2094af22bd4b13316c8ab2a9d2c74576984f
 
-executable hilarity-server-exe
-  hs-source-dirs:      app
-  main-is:             Main.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       base
-                     , hilarity-server
-                     , async
-                     , containers
-                     , derive
-                     , lens
-                     , random
-                     , stm
-                     , text
-                     , transformers
-                     , websockets
-  default-language:    Haskell2010
-  other-modules:       Operations.Mods
-                     , Operations.Mods.User
-                     , Operations.Utils
-                     , Types.Card
-                     , Types.Deck
-                     , Types.Failure
-                     , Types.Game
-                     , Types.State
-
-test-suite hilarity-server-test
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Spec.hs
-  build-depends:       base
-                     , hilarity-server
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  default-language:    Haskell2010
+name:           hilarity-server
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/shadowmanu/hilarity-server#readme>
+homepage:       https://github.com/shadowmanu/hilarity-server#readme
+bug-reports:    https://github.com/shadowmanu/hilarity-server/issues
+author:         Manuel Pacheco
+maintainer:     manuelalejandropm@gmail.com
+copyright:      2019 Manuel Pacheco
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
 
 source-repository head
-  type:     git
-  location: https://github.com/githubuser/hilarity-server
+  type: git
+  location: https://github.com/shadowmanu/hilarity-server
+
+library
+  exposed-modules:
+      Lib
+  other-modules:
+      Paths_hilarity_server
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+  default-language: Haskell2010
+
+executable hilarity-server-exe
+  main-is: Main.hs
+  other-modules:
+      Messaging
+      Operations.Mods
+      Operations.Mods.Card
+      Operations.Mods.Common
+      Operations.Mods.User
+      Operations.Utils
+      Server
+      Types.Actions
+      Types.Card
+      Types.Common
+      Types.Deck
+      Types.Failure
+      Types.Game
+      Types.Hand
+      Types.Round
+      Types.State
+      Types.Users
+      Paths_hilarity_server
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , containers
+    , hilarity-server
+    , lens
+    , random
+    , stm
+    , text
+    , transformers
+    , websockets
+  default-language: Haskell2010
+
+test-suite hilarity-server-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_hilarity_server
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , hilarity-server
+  default-language: Haskell2010

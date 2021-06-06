@@ -1,5 +1,14 @@
 module Types.Failure 
-( Failure(Failure)
+( Failure(..)
 ) where
 
-data Failure = Failure deriving Show
+import Types.Common
+import Types.Card
+
+data Failure
+  = Failure
+  | UserAlreadySignedIn UserId
+  | CardNotAvailable [CardId]
+  | WrongNumberOfCards Int
+  | RoundNotPlayable
+  deriving Show
