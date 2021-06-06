@@ -2,11 +2,12 @@
 {-# LANGUAGE Rank2Types #-}
 
 module Hilarity.Server.Operations.Mods
-( Mod
-, runMod
-, applyMod
-, throw
-) where
+  ( Mod,
+    runMod,
+    applyMod,
+    throw,
+  )
+where
 
 import Control.Concurrent.STM
 import Control.Lens
@@ -14,8 +15,7 @@ import Control.Monad.Trans.Class
 import qualified Control.Monad.Trans.Except as E
 import qualified Control.Monad.Trans.State.Lazy as S
 import qualified Data.Text as T
-
-import Hilarity.Server.Types.Failure
+import Hilarity.Server.Types.Failure (Failure)
 import qualified Hilarity.Server.Types.Game as G
 import Hilarity.Server.Types.State
 
@@ -27,7 +27,7 @@ import Hilarity.Server.Types.State
 type Err = E.ExceptT Failure Identity
 
 -- Our state monad
-type St s m a = S.StateT s m a 
+type St s m a = S.StateT s m a
 
 -- Our full monad. A stateful computation that can fail.
 type Mod s a = St s Err a
