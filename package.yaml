@@ -4,7 +4,7 @@ github: "shadowmanu/hilarity-server"
 license: MIT
 author: "Manuel Pacheco"
 maintainer: "manuelalejandropm@gmail.com"
-copyright: "2019 Manuel Pacheco"
+copyright: "2021 Manuel Pacheco"
 
 extra-source-files:
   - README.md
@@ -20,8 +20,8 @@ library:
 
 executables:
   hilarity-server-exe:
-    main: Main.hs
     source-dirs: app
+    main: Main.hs
     ghc-options:
       - -threaded
       - -rtsopts
@@ -39,8 +39,8 @@ executables:
 
 tests:
   hilarity-server-test:
-    main: Spec.hs
     source-dirs: test
+    main: Spec.hs
     ghc-options:
       - -threaded
       - -rtsopts

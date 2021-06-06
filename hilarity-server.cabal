@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.31.1.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f7cded51440305cc48c5a334a3be2094af22bd4b13316c8ab2a9d2c74576984f
+-- hash: 3838d8fe57b7702515225a2c251c5a715ce99a285746cd55a2aaabb104659643
 
 name:           hilarity-server
 version:        0.1.0.0
@@ -13,7 +13,7 @@ homepage:       https://github.com/shadowmanu/hilarity-server#readme
 bug-reports:    https://github.com/shadowmanu/hilarity-server/issues
 author:         Manuel Pacheco
 maintainer:     manuelalejandropm@gmail.com
-copyright:      2019 Manuel Pacheco
+copyright:      2021 Manuel Pacheco
 license:        MIT
 license-file:   LICENSE
 build-type:     Simple
