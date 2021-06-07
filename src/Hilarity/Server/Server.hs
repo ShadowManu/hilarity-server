@@ -7,9 +7,11 @@ import Control.Concurrent.STM
 import Control.Monad (forever, unless)
 import qualified Data.Text as T
 import qualified Hilarity.Server.Broker as Broker
+import qualified Hilarity.Server.Events as Events
 import Hilarity.Server.Operations.Mods (applyMod)
 import Hilarity.Server.Operations.Mods.User (addUser)
 import qualified Hilarity.Server.Types.Common as C
+import qualified Hilarity.Server.Types.Failure as Failure
 import Hilarity.Server.Types.State (State, newIO)
 import qualified Network.WebSockets as WS
 import qualified System.Random
@@ -41,16 +43,18 @@ handle tState broker connection = registerUser >> receive
       unless registered registerUser
       where
         reply (Left failure) _ = do
-          let message = T.pack . show $ failure
-          Broker.send (Broker.Raw connection message) broker
+          let message = Broker.Raw connection $ Events.Failure failure
+          Broker.send message broker
           return False
-        reply (Right message) username = do
+        reply (Right text) username = do
           Broker.add username connection broker
-          Broker.send (Broker.Uni (username, message)) broker
+          let message = Broker.Uni (username, Events.Raw text)
+          Broker.send message broker
           return True
 
     receive = forever $ do
-      message <- WS.receiveData connection
+      inbound <- WS.receiveData connection
       -- Temporarily send a broad message with the same message
       -- Next steps: use with applyMod
-      atomically $ Broker.send (Broker.Broad message) broker
+      let message = Broker.Broad $ Events.Raw inbound
+      atomically $ Broker.send message broker
