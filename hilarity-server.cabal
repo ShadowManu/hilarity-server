@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 5765d1c41c3080208ff778d7333635b8b97422885331609c08461e7af21ddd3b
+-- hash: 72a1e8c7085e37f0d6c8b1c4d0a4b317b4b87bd3260717a20964453590768f6e
 
 name:           hilarity-server
 version:        0.1.0.0
@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       Hilarity.Server.Broker
+      Hilarity.Server.Events
       Hilarity.Server.Operations.Mods
       Hilarity.Server.Operations.Mods.Card
       Hilarity.Server.Operations.Mods.Common
