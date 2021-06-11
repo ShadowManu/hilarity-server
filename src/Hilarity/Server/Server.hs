@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Hilarity.Server.Server
   ( runServer,
   )
@@ -5,6 +7,8 @@ where
 
 import Control.Concurrent.STM
 import Control.Monad (forever, unless)
+import Data.Aeson (decode, encode)
+import Data.ByteString.Lazy (ByteString)
 import qualified Data.Text as T
 import qualified Hilarity.Server.Broker as Broker
 import qualified Hilarity.Server.Events as Events
@@ -35,22 +39,45 @@ handle :: TVar State -> Broker.Broker -> WS.Connection -> IO b
 handle tState broker connection = registerUser >> receive
   where
     registerUser = do
-      username <- WS.receiveData connection :: IO T.Text
-      registered <- atomically $ do
-        result <- applyMod (addUser username) tState
-        -- TODO based on result, a better message must be built
-        reply result username
-      unless registered registerUser
+      maybeUsername <- receiveMessage
+      case maybeUsername of
+        (Just (Events.AuthUserSignIn username)) -> do
+          registered <- atomically $ do
+            result <- applyMod (addUser username) tState
+            -- TODO based on result, a better message must be built
+            reply result username
+          unless registered registerUser
+        _ -> atomically $ Broker.send message broker
+          where
+            message =
+              Broker.Raw connection $
+                Events.Failure
+                  (Failure.Failure . Just . T.pack $ "Unexpected Event")
       where
         reply (Left failure) _ = do
-          let message = Broker.Raw connection $ Events.Failure failure
-          Broker.send message broker
+          notifyError failure
           return False
         reply (Right text) username = do
           Broker.add username connection broker
           let message = Broker.Uni (username, Events.Raw text)
-          Broker.send message broker
+          notify message
           return True
+
+    receiveMessage = do
+      byteData <- WS.receiveData connection :: IO ByteString
+      let maybeEvent = decode byteData :: Maybe Events.InboundEvent
+      maybe ifError ifDecoded maybeEvent
+      where
+        ifError = atomically $ notifyTextError "Bad JSON" >> return Nothing
+        ifDecoded = return . return
+
+    notify message = Broker.send message broker
+
+    notifyError failure = notify message
+      where
+        message = Broker.Raw connection $ Events.Failure failure
+
+    notifyTextError = notifyError . Failure.Failure . Just
 
     receive = forever $ do
       inbound <- WS.receiveData connection
