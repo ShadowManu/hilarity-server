@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Hilarity.Server.Events
   ( InboundEvent (..),
@@ -12,8 +13,9 @@ import GHC.Generics
 import qualified Hilarity.Server.Types.Failure as F
 import Network.WebSockets (WebSocketsData (fromLazyByteString))
 
+-- >>> Data.Aeson.encode $ AuthUserSignIn "ShadowManu"
 data InboundEvent
-  = AuthUserSignIn {id :: String}
+  = AuthUserSignIn {id :: T.Text}
   | NetworkKeepAlive
   deriving (Eq, Show, Generic)
 
