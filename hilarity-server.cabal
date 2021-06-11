@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 72a1e8c7085e37f0d6c8b1c4d0a4b317b4b87bd3260717a20964453590768f6e
+-- hash: 1efde5846bc0202358580964126516a9660ced8f20683304b8be4cd0dc370933
 
 name:           hilarity-server
 version:        0.1.0.0
@@ -52,6 +52,7 @@ library
   build-depends:
       aeson
     , base >=4.14 && <5
+    , bytestring
     , containers
     , lens
     , random
