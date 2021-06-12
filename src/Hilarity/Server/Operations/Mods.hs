@@ -39,19 +39,20 @@ runMod mod state = E.runExcept $ S.runStateT mod state
 liftMod :: Lens' s t -> Mod t a -> Mod s a
 liftMod lens targetMod = do
   target <- use lens
-  case runMod targetMod target of
-    Left err -> lift $ E.throwE err
-    Right (a, t) -> do
+  either ifError ifSuccess $ runMod targetMod target
+  where
+    ifError err = lift $ E.throwE err
+    ifSuccess (a, t) = do
       lens .= t
       return a
 
 applyMod :: Mod s a -> TVar s -> STM (Either Failure a)
 applyMod mod tState = do
   state <- readTVar tState
-  case runMod mod state of
-    Left err ->
-      return $ Left err
-    Right (a, newState) -> do
+  either ifError ifSuccess $ runMod mod state
+  where
+    ifError err = return $ Left err
+    ifSuccess (a, newState) = do
       writeTVar tState newState
       return $ Right a
 
