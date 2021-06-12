@@ -19,6 +19,7 @@ library:
   source-dirs: src
   dependencies:
     - aeson
+    - bytestring
     - containers
     - lens
     - random

@@ -15,16 +15,18 @@ import Control.Concurrent (ThreadId, forkIO)
 import Control.Concurrent.STM
 import Control.Lens
 import Control.Monad (forM_, forever)
+import Data.Aeson (encode)
 import Data.Map ((!))
 import qualified Data.Map as M
 import qualified Data.Text as T
+import Hilarity.Server.Events (OutboundEvent)
 import qualified Hilarity.Server.Types.Common as C
 import qualified Network.WebSockets as WS
 import Prelude hiding ((!))
 
 type Target = C.UserId
 
-type Response = T.Text
+type Response = OutboundEvent
 
 -- Ways a message can be sent
 data Message
@@ -65,12 +67,12 @@ startBroadcast broker = forkIO . forever $ do
 
   case msg of
     Uni (target, response) ->
-      WS.sendTextData (connections ! target) response
+      WS.sendTextData (connections ! target) $ encode response
     Multi targets ->
       forM_ targets $ \(target, response) ->
-        WS.sendTextData (connections ! target) response
+        WS.sendTextData (connections ! target) $ encode response
     Broad response ->
       forM_ (M.elems connections) $ \connection ->
-        WS.sendTextData connection response
+        WS.sendTextData connection $ encode response
     Raw connection response ->
-      WS.sendTextData connection response
+      WS.sendTextData connection $ encode response
