@@ -20,7 +20,7 @@ import qualified Data.Map as Map
 import qualified Data.Text as Text
 import Hilarity.Server.Broker.Message (Message)
 import qualified Hilarity.Server.Broker.Message as Message
-import Hilarity.Server.Events (OutboundEvent)
+import Hilarity.Server.Event.Outbound (Outbound)
 import qualified Hilarity.Server.Types.Common as Common
 import qualified Network.WebSockets as WebSockets
 import Prelude hiding ((!))

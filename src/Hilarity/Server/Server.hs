@@ -12,7 +12,8 @@ import Data.ByteString.Lazy (ByteString)
 import qualified Data.Text as T
 import qualified Hilarity.Server.Broker as Broker
 import qualified Hilarity.Server.Broker.Message as Message
-import qualified Hilarity.Server.Events as Events
+import qualified Hilarity.Server.Event.Inbound as Inbound
+import qualified Hilarity.Server.Event.Outbound as Outbound
 import Hilarity.Server.Operations.Mods (applyMod)
 import Hilarity.Server.Operations.Mods.User (addUser)
 import qualified Hilarity.Server.Types.Common as C
@@ -42,7 +43,7 @@ handle tState broker connection = registerUser >> receive
     registerUser = do
       maybeUsername <- receiveEvent
       case maybeUsername of
-        (Just (Events.AuthUserSignIn username)) -> do
+        (Just (Inbound.AuthUserSignIn username)) -> do
           registered <- atomically $ do
             result <- applyMod (addUser username) tState
             -- TODO based on result, a better message must be built
@@ -52,29 +53,28 @@ handle tState broker connection = registerUser >> receive
           where
             message =
               Message.Raw connection $
-                Events.Failure
+                Outbound.Failure
                   (Failure.Failure . Just . T.pack $ "Unexpected Event")
       where
         reply (Left failure) _ = do
           notify $
-            Message.Raw connection $ Events.Failure failure
+            Message.Raw connection $ Outbound.Failure failure
           return False
-        reply (Right text) username = do
+        reply (Right outbound) username = do
           Broker.add username connection broker
-          let message = Message.Uni (username, Events.Raw text)
-          notify message
+          notify $ Message.Uni (username, outbound)
           return True
 
     receiveEvent = do
       byteData <- WS.receiveData connection :: IO ByteString
-      let maybeEvent = decode byteData :: Maybe Events.InboundEvent
+      let maybeEvent = decode byteData :: Maybe Inbound.Inbound
       maybe ifError ifDecoded maybeEvent
       where
         ifError = do
           atomically
             . notify
             . Message.Raw connection
-            . Events.Failure
+            . Outbound.Failure
             . Failure.Failure
             $ Just "BAD JSON"
           return Nothing
@@ -86,5 +86,5 @@ handle tState broker connection = registerUser >> receive
       inbound <- WS.receiveData connection
       -- Temporarily send a broad message with the same message
       -- Next steps: use with applyMod
-      let message = Message.Broad $ Events.Raw inbound
+      let message = Message.Broad $ Outbound.Raw inbound
       atomically $ Broker.send message broker

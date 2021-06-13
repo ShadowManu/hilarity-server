@@ -8,6 +8,7 @@ where
 import Control.Lens
 import Control.Monad (replicateM)
 import Data.Text (Text)
+import qualified Hilarity.Server.Event.Outbound as Outbound
 import Hilarity.Server.Operations.Mods (Mod)
 import Hilarity.Server.Operations.Utils (assert)
 import qualified Hilarity.Server.Types.Card as Ca
@@ -21,7 +22,7 @@ import qualified Hilarity.Server.Types.Users as Users
 import System.Random
 
 -- Add user to game
-addUser :: UserId -> Mod State UserId
+addUser :: UserId -> Mod State Outbound.Outbound
 addUser name = do
   -- We won't check if the user exists, since the same user being added again
   -- can be caused by a reconnection, and we will assume it as such.
@@ -30,4 +31,4 @@ addUser name = do
   -- exists <- use $ State.game . Game.users . to (Users.has name)
   -- assert (not exists) (Failure.UserAlreadySignedIn name)
   State.game . Game.users %= Users.add name
-  return name
+  return $ Outbound.AuthUserSignInSuccess name
