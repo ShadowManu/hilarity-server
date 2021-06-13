@@ -6,9 +6,10 @@ module Hilarity.Server.Server
 where
 
 import Control.Concurrent.STM
-import Control.Monad (forever, unless)
+import Control.Monad (forever, unless, when)
 import Data.Aeson (decode, encode)
 import Data.ByteString.Lazy (ByteString)
+import Data.Either (isLeft, isRight)
 import qualified Data.Text as T
 import qualified Hilarity.Server.Broker as Broker
 import qualified Hilarity.Server.Broker.Message as Message
@@ -40,30 +41,21 @@ app tState broker pending = WS.acceptRequest pending >>= handle tState broker
 handle :: TVar State -> Broker.Broker -> WS.Connection -> IO b
 handle tState broker connection = registerUser >> receive
   where
-    registerUser = do
-      maybeUsername <- receiveEvent
-      case maybeUsername of
-        (Just (Inbound.AuthUserSignIn username)) -> do
-          registered <- atomically $ do
-            result <- applyMod (addUser username) tState
-            -- TODO based on result, a better message must be built
-            reply result username
-          unless registered registerUser
-        _ -> atomically $ Broker.send message broker
-          where
-            message =
-              Message.Raw connection $
-                Outbound.Failure
-                  (Failure.Failure . Just . T.pack $ "Unexpected Event")
+    registerUser = receiveEvent >>= tryRegister
       where
-        reply (Left failure) _ = do
-          notify $
-            Message.Raw connection $ Outbound.Failure failure
-          return False
-        reply (Right outbound) username = do
-          Broker.add username connection broker
-          notify $ Message.Uni (username, outbound)
-          return True
+        tryRegister (Just (Inbound.AuthUserSignIn username)) = do
+          result <- atomically $ do
+            result <- applyMod (addUser username) tState
+            when (isRight result) $ Broker.add username connection broker
+            replyModWith (\o -> Message.Uni (username, o)) result
+            return result
+          when (isLeft result) registerUser
+        tryRegister _ =
+          atomically
+            . notify
+            . Message.Raw connection
+            . Outbound.Failure
+            $ Failure.Failure . Just . T.pack $ "Unexpected Event. Sign In first"
 
     receiveEvent = do
       byteData <- WS.receiveData connection :: IO ByteString
@@ -81,6 +73,12 @@ handle tState broker connection = registerUser >> receive
         ifDecoded = return . return
 
     notify message = Broker.send message broker
+
+    replyModWith _ (Left failure) =
+      notify $
+        Message.Raw connection $ Outbound.Failure failure
+    replyModWith f (Right outbound) =
+      notify $ f outbound
 
     receive = forever $ do
       inbound <- WS.receiveData connection
